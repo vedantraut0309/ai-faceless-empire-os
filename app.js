@@ -332,6 +332,23 @@ function closeWelcomeModal() {
     showToast('NEURAL INTERFACE FULLY SYNCHRONIZED', 'success');
 }
 
+// --- MOBILE NAVIGATION ---
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const isHidden = sidebar.classList.contains('-translate-x-full');
+
+    if (isHidden) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+    } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('opacity-100');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initThreeJS();
     initDate();
@@ -419,13 +436,14 @@ function initThreeJS() {
     renderer.setPixelRatio(window.devicePixelRatio);
 
     // Grid Material
-    const gridDivisions = empireSettings.reducedLatency ? 20 : 50;
+    const isMobile = window.innerWidth < 768;
+    const gridDivisions = isMobile ? 15 : (empireSettings.reducedLatency ? 20 : 50);
     const gridGeometry = new THREE.PlaneGeometry(20, 20, gridDivisions, gridDivisions);
     gridMaterial = new THREE.MeshBasicMaterial({
         color: 0xa855f7,
         wireframe: true,
         transparent: true,
-        opacity: 0.1,
+        opacity: isMobile ? 0.05 : 0.1,
         blending: THREE.AdditiveBlending
     });
 
@@ -436,7 +454,7 @@ function initThreeJS() {
 
     // Particles (Floating Neural Nodes)
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = empireSettings.reducedLatency ? 200 : 800;
+    const particlesCount = isMobile ? 100 : (empireSettings.reducedLatency ? 200 : 800);
     const posArray = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount * 3; i++) {
@@ -446,10 +464,10 @@ function initThreeJS() {
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.008,
+        size: isMobile ? 0.015 : 0.008,
         color: 0x06b6d4,
         transparent: true,
-        opacity: 0.4,
+        opacity: isMobile ? 0.2 : 0.4,
         blending: THREE.AdditiveBlending
     });
 
@@ -582,7 +600,9 @@ function renderContent(tabId) {
             initSettingsListeners();
             break;
         default:
-            contentArea.innerHTML = `<div class="flex items-center justify-center h-full"><h2 class="text-3xl font-bold opacity-20">COMING SOON</h2></div>`;
+            console.warn(`Tab transition for [${tab}] failed. Redirecting to Mainframe.`);
+            renderContent('dashboard');
+            showToast('NEURAL NODE REDIRECTED: RESOURCE NOT FOUND', 'warning');
     }
 
     // Apply 3D Parallax to all .glass-card elements
@@ -593,34 +613,34 @@ function renderContent(tabId) {
 
 function renderDashboard() {
     return `
-        <div class="space-y-8 animate-in relative">
+        <div class="space-y-6 md:space-y-8 animate-in relative px-1 md:px-0">
             <div class="scan-line"></div>
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-4xl font-extrabold tracking-tight italic">SYSTEM <span class="text-accent-dynamic text-glow-accent uppercase tracking-tighter">Mainframe</span></h2>
-                    <p class="text-white/40 mt-1">Real-time empire synchronization active.</p>
+                    <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight italic uppercase">SYSTEM <span class="text-accent-dynamic text-glow-accent tracking-tighter">Mainframe</span></h2>
+                    <p class="text-white/40 mt-1 text-xs md:text-sm">Real-time empire synchronization active.</p>
                 </div>
-                <div class="flex items-center gap-6">
+                <div class="flex flex-wrap items-center gap-3 md:gap-6">
                     <!-- 3D Core Container -->
-                    <div class="flex items-center gap-3 glass-card px-4 py-2 rounded-2xl border-accent-dynamic/30">
-                        <canvas id="neural-core-canvas" width="60" height="60"></canvas>
+                    <div class="flex items-center gap-3 glass-card px-3 md:px-4 py-1.5 md:py-2 rounded-2xl border-accent-dynamic/30 scale-90 md:scale-100 origin-left">
+                        <canvas id="neural-core-canvas" width="50" height="50"></canvas>
                         <div>
-                            <p class="text-[10px] text-accent-dynamic font-bold tracking-widest">NEURAL CORE</p>
-                            <p class="text-[10px] text-white/30 font-mono">ACTIVE // 98.4%</p>
+                            <p class="text-[8px] md:text-[10px] text-accent-dynamic font-bold tracking-widest">NEURAL CORE</p>
+                            <p class="text-[8px] md:text-[10px] text-white/30 font-mono">ACTIVE // 98.4%</p>
                         </div>
                     </div>
 
-                    <div class="glass-card px-6 py-3 rounded-2xl flex items-center gap-4">
-                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
-                        <span class="text-xs font-mono font-bold">API STATUS: OPTIMAL</span>
+                    <div class="glass-card px-4 md:px-6 py-2 md:py-3 rounded-2xl flex items-center gap-3 md:gap-4 scale-90 md:scale-100 origin-left">
+                        <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
+                        <span class="text-[10px] md:text-xs font-mono font-bold whitespace-nowrap">API STATUS: OPTIMAL</span>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                ${renderStatCard('Total Views', '1.2M', '+12.5%', 'accent-dynamic')}
-                ${renderStatCard('Total Subs', '45.2K', '+5.2%', 'accent-dynamic')}
-                ${renderStatCard('Revenue', '$12,450', '+22.1%', 'accent-dynamic')}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                ${renderStatCard('Views', '1.2M', '+12.5%', 'accent-dynamic')}
+                ${renderStatCard('Subs', '45.2K', '+5.2%', 'accent-dynamic')}
+                ${renderStatCard('Revenue', '$12.4K', '+22.1%', 'accent-dynamic')}
                 ${renderStatCard('Avg CTR', '8.4%', '-1.2%', 'white')}
             </div>
 
@@ -650,15 +670,17 @@ function renderDashboard() {
 
 function renderStatCard(label, val, trend, colorClass) {
     const isUp = trend.startsWith('+');
+    const isDynamic = colorClass === 'accent-dynamic';
+
     return `
-        <div class="glass-card p-6 rounded-3xl group cursor-pointer hover:scale-[1.02] transition-all">
-            <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">${label}</p>
+        <div class="glass-card p-6 rounded-3xl group cursor-pointer hover:scale-[1.02] transition-all border border-transparent hover:border-accent-dynamic/20">
+            <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2">${label}</p>
             <div class="flex items-end justify-between">
-                <h3 class="text-3xl font-extrabold group-hover:text-${colorClass} transition-colors">${val}</h3>
-                <span class="${isUp ? 'text-green-400' : 'text-red-400'} text-xs font-mono font-bold">${trend}</span>
+                <h3 class="text-3xl font-extrabold ${isDynamic ? 'text-white group-hover:text-accent-dynamic' : 'text-' + colorClass} transition-colors">${val}</h3>
+                <span class="${isUp ? 'text-green-400' : 'text-red-400'} text-[10px] font-mono font-bold">${trend}</span>
             </div>
             <div class="mt-4 w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div class="h-full bg-${colorClass || 'accent-purple'}" style="width: 70%"></div>
+                <div class="h-full ${isDynamic ? 'bg-accent-dynamic shadow-accent-dynamic' : 'bg-' + colorClass} transition-all duration-700" style="width: 70%"></div>
             </div>
         </div>
     `;
@@ -673,11 +695,11 @@ function renderNicheResearch() {
     return `
         <div class="space-y-8 animate-in relative pb-20">
             <!-- Top Stats Bar -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                ${renderNicheStat('Total Found', stats.count, 'accent-dynamic')}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+                ${renderNicheStat('Found', stats.count, 'accent-dynamic')}
                 ${renderNicheStat('Avg RPM', '$' + stats.avgRpm, 'accent-dynamic')}
-                ${renderNicheStat('Top Platform', stats.topPlatform, 'accent-dynamic')}
-                ${renderNicheStat('Best Niche', stats.bestNiche, 'white')}
+                ${renderNicheStat('Platform', stats.topPlatform, 'accent-dynamic')}
+                ${renderNicheStat('Best', stats.bestNiche, 'white')}
             </div>
 
             <div class="flex flex-col lg:flex-row gap-8">
@@ -759,9 +781,9 @@ function renderNicheResearch() {
 
 function renderNicheStat(label, val, col) {
     return `
-        <div class="glass-card p-6 rounded-2xl border-l border-white/10">
-            <p class="text-white/30 text-[9px] font-bold uppercase tracking-widest mb-1">${label}</p>
-            <h4 class="text-2xl font-black text-${col}">${val}</h4>
+        <div class="glass-card p-4 md:p-6 rounded-2xl border-l border-white/10">
+            <p class="text-white/30 text-[8px] md:text-[9px] font-bold uppercase tracking-widest mb-1 truncate">${label}</p>
+            <h4 class="text-lg md:text-2xl font-black text-${col} truncate">${val}</h4>
         </div>
     `;
 }
@@ -845,6 +867,7 @@ function resetNicheFilters() {
     searchQuery = '';
     activeFilters = { platform: 'All', competition: 'All', monetization: 'All', minRpm: 0 };
     renderContent('niche');
+    showToast('NICHE FILTERS RESET TO NEURAL DEFAULT', 'info');
 }
 
 // --- MODALS & EXTRAS ---
@@ -942,12 +965,12 @@ function isFavorite(id) {
 
 function copyKeywords(text) {
     navigator.clipboard.writeText(text);
-    alert('KEYWORDS COPIED TO EMPIRE STORAGE');
+    showToast('KEYWORDS CACHED TO LOCAL BUFFER', 'success');
 }
 
 function copyText(text) {
     navigator.clipboard.writeText(text);
-    alert('IDEA COPIED');
+    showToast('DATA SEGMENT COPIED', 'success');
 }
 
 function renderScriptFactory() {
@@ -1006,10 +1029,10 @@ function renderDirectory() {
     return `
         <div class="space-y-8 animate-in relative pb-20">
             <!-- Header & Global Search -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div>
-                    <h2 class="text-4xl font-extrabold tracking-tight italic">AI TOOL <span class="text-accent-dynamic text-glow-accent uppercase tracking-tighter">Directory</span></h2>
-                    <p class="text-white/40 mt-1 uppercase text-[10px] tracking-widest font-mono text-glow-accent">One command center. All neural nodes active.</p>
+                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight italic uppercase">AI TOOL <span class="text-accent-dynamic text-glow-accent tracking-tighter">Directory</span></h2>
+                    <p class="text-white/40 mt-1 uppercase text-[8px] md:text-[10px] tracking-widest font-mono text-glow-accent">One command center. All neural nodes active.</p>
                 </div>
                 <div class="w-full md:w-96 glass-card px-6 py-4 rounded-2xl flex items-center gap-4 border-white/10 group focus-within:border-accent-dynamic/50 transition-all shadow-xl">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/20 group-focus-within:text-accent-dynamic transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1021,10 +1044,10 @@ function renderDirectory() {
             </div>
 
             <!-- Global Stats Bar -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                ${renderDirectoryStat('Tools Used Today', toolStats.usedToday, 'accent-dynamic')}
-                ${renderDirectoryStat('Outputs Generated', toolStats.totalOutputs, 'accent-dynamic')}
-                ${renderDirectoryStat('Most Used Node', toolStats.mostUsed, 'accent-dynamic')}
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                ${renderDirectoryStat('Used', toolStats.usedToday, 'accent-dynamic')}
+                ${renderDirectoryStat('Outputs', toolStats.totalOutputs, 'accent-dynamic')}
+                ${renderDirectoryStat('Top Node', toolStats.mostUsed, 'accent-dynamic')}
             </div>
 
             <div class="flex flex-col xl:flex-row gap-8">
@@ -1034,7 +1057,7 @@ function renderDirectory() {
                     <div class="flex flex-wrap gap-2">
                         ${categories.map(cat => `
                             <button onclick="updateToolCategory('${cat}')" 
-                                class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${activeToolCategory === cat ? 'bg-accent-blue text-white border-accent-blue shadow-[0_0_20px_rgba(59,130,246,0.4)]' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}">
+                                class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${activeToolCategory === cat ? 'bg-accent-dynamic text-dark border-accent-dynamic shadow-accent-dynamic' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}">
                                 ${cat}
                             </button>
                         `).join('')}
@@ -1101,9 +1124,9 @@ function renderDirectory() {
 
 function renderDirectoryStat(label, val, col) {
     return `
-        <div class="glass-card p-6 rounded-[2.5rem] border-white/5 border-t border-l">
-            <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">${label}</p>
-            <h4 class="text-3xl font-black text-${col} tracking-tighter">${val}</h4>
+        <div class="glass-card p-4 md:p-6 rounded-2xl md:rounded-[2.5rem] border-white/5 border-t border-l">
+            <p class="text-[8px] md:text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-1 md:mb-2 truncate">${label}</p>
+            <h4 class="text-xl md:text-3xl font-black text-${col} tracking-tighter truncate">${val}</h4>
         </div>
     `;
 }
@@ -1235,6 +1258,13 @@ function resetToolModal() {
 
 function executeAICommand() {
     const input = document.getElementById('ai-command-input');
+    const inputVal = input.value.trim();
+    if (!inputVal) {
+        gsap.to(input, { x: 10, duration: 0.1, repeat: 3, yoyo: true });
+        showToast('NEURAL COMMAND BUFFER EMPTY', 'error');
+        return;
+    }
+
     const inputZone = document.getElementById('ai-input-zone');
     const outputZone = document.getElementById('ai-output-zone');
     const outputContent = document.getElementById('ai-output-content');
@@ -1395,17 +1425,8 @@ function saveToHistory() {
     toolStats.totalOutputs = toolHistory.length;
     localStorage.setItem('empire-tool-stats', JSON.stringify(toolStats));
 
-    // Feedback
-    const btn = event.target;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = 'SYNCED_TO_MATRIX';
-    btn.classList.add('bg-accent-dynamic', 'text-white');
-
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.remove('bg-accent-dynamic', 'text-white');
-        renderContent('directory'); // Refresh to show in history sidebar
-    }, 1000);
+    showToast('OUTPUT ARCHIVED TO NEURAL LIBRARY', 'success');
+    renderContent('directory'); // Refresh to show in history sidebar
 }
 
 function updateUsageStats() {
@@ -1446,6 +1467,7 @@ function clearToolHistory() {
         localStorage.setItem('empire-tool-history', JSON.stringify(toolHistory));
         localStorage.setItem('empire-tool-stats', JSON.stringify(toolStats));
         renderContent('directory');
+        showToast('TOOL HISTORY MATRIX PURGED', 'warning');
     }
 }
 
@@ -1454,14 +1476,7 @@ function copyOutput() {
     const raw = content.getAttribute('data-raw');
 
     navigator.clipboard.writeText(raw).then(() => {
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = 'COPIED_TO_BIOS';
-        btn.classList.add('bg-accent-dynamic', 'text-dark');
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.classList.remove('bg-accent-dynamic', 'text-dark');
-        }, 1500);
+        showToast('NEURAL DATA COPIED TO MASTER BUFFER', 'success');
     });
 }
 
@@ -1515,7 +1530,6 @@ function renderPlatformStat(label, val, col) {
 // --- SETTINGS LOGIC ---
 
 function updateAccentColor(color) {
-    console.log(`Switching to accent color: ${color}`);
     empireSettings.accentColor = color;
     applySettings();
     showSaveNotification();
@@ -1747,6 +1761,8 @@ function saveSettings() {
             btn.classList.add('bg-green-500', 'text-white');
             btn.classList.remove('bg-white', 'text-dark');
 
+            showToast('EMPIRE SETTINGS PERSISTED TO DISK', 'success');
+
             // Hide the save bar
             const bar = document.getElementById('save-bar');
             setTimeout(() => {
@@ -1777,6 +1793,7 @@ function resetSettings() {
         localStorage.setItem('empire-settings', JSON.stringify(empireSettings));
         applySettings();
         renderContent('settings');
+        showToast('NEURAL PROTOCOLS REVERTED TO FACTORY DEFAULTS', 'warning');
     }
 }
 
@@ -1788,6 +1805,7 @@ function generateScriptStructure() {
 
     if (!topic) {
         gsap.to(output, { x: 10, duration: 0.1, repeat: 3, yoyo: true });
+        showToast('INPUT REQUIRED: TOPIC NODE EMPTY', 'error');
         return;
     }
 
@@ -1811,6 +1829,7 @@ function generateScriptStructure() {
                 </div>
             </div>
         `;
+        showToast('VIRAL SCRIPT FRAMEWORK GENERATED', 'success');
     }, 1500);
 }
 
@@ -1895,7 +1914,6 @@ function initMagnetic() {
 
 // --- 3D MOUSE PARALLAX ---
 function initNeuralCore() {
-    console.log("NEURAL_CORE_INITIALIZED");
     // Holographic core logic can be expanded here
 }
 
@@ -2279,8 +2297,9 @@ function filterRevenueData() {
 }
 
 function initRevenueCharts() {
-    initRevenueDonutChart();
-    initRevenueLineChart();
+    const isMobile = window.innerWidth < 768;
+    initRevenueDonutChart(isMobile);
+    initRevenueLineChart(isMobile);
 }
 
 function initRevenueDonutChart() {
@@ -2309,7 +2328,7 @@ function initRevenueDonutChart() {
         options: {
             plugins: {
                 legend: {
-                    display: true,
+                    display: !isMobile,
                     position: 'bottom',
                     labels: { color: 'rgba(255,255,255,0.4)', font: { size: 9, family: 'Space Grotesk', weight: 'bold' }, padding: 20 }
                 }
@@ -2443,6 +2462,7 @@ function addRevenueEntry() {
 
     if (!title || isNaN(amount) || !date) {
         gsap.to(document.getElementById('rev-title').parentElement, { x: 10, duration: 0.1, repeat: 5, yoyo: true });
+        showToast('LEDGER ERROR: MISSING FINANCIAL DEFAULTS', 'error');
         return;
     }
 
@@ -2489,6 +2509,7 @@ function deleteRevenueEntry(e, id) {
         localStorage.setItem('empire-revenue', JSON.stringify(REVENUE_DATA));
         renderContent('revenue');
         initRevenueCharts();
+        showToast('TRANSACTION PROTOCOL TERMINATED', 'warning');
     }
 }
 

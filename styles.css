@@ -200,6 +200,14 @@ canvas {
     text-shadow: 0 0 10px var(--accent-glow);
 }
 
+.group:hover .text-accent-dynamic {
+    color: var(--accent-hex);
+}
+
+.group:hover .shadow-accent-dynamic {
+    box-shadow: 0 0 30px var(--accent-glow);
+}
+
 /* Toast System Animations */
 @keyframes toast-in {
     from {

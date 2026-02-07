@@ -45,21 +45,22 @@
         <div class="absolute inset-0 bg-dark/60 backdrop-blur-sm -z-10"></div>
         <div class="max-w-4xl space-y-8 animate-in">
             <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-purple/10 border border-accent-purple/20 text-[10px] font-bold tracking-[0.2em] text-accent-purple uppercase mb-4">
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-dynamic/10 border border-accent-dynamic/20 text-[10px] font-bold tracking-[0.2em] text-accent-dynamic uppercase mb-4">
                 <span class="relative flex h-2 w-2 mr-1">
                     <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-purple opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-purple"></span>
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-dynamic opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-dynamic"></span>
                 </span>
                 NEXT-GEN AI AUTOMATION
             </div>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-none glow-text-purple">
+            <h1
+                class="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter leading-tight md:leading-none text-glow-accent">
                 THE AI FACELESS <br />
                 <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple via-accent-cyan to-accent-blue">EMPIRE
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-accent-dynamic via-white/50 to-accent-dynamic">EMPIRE
                     OS</span>
             </h1>
-            <p class="text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
+            <p class="text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed px-4 md:px-0">
                 The high-performance command center for the modern content architect. <br class="hidden md:block" />
                 Scale your faceless empire with neural scripts, niche intelligence, and cross-platform automation.
             </p>
@@ -106,10 +107,10 @@
     <div id="briefing-overlay"
         class="fixed inset-0 z-[110] bg-dark flex items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-700">
         <div class="absolute inset-0 bg-noise opacity-[0.05]"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-accent-purple/10 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-accent-dynamic/10 to-transparent"></div>
 
         <div
-            class="max-w-4xl w-full glass-morphism p-12 rounded-[3rem] relative overflow-hidden border-accent-purple/30">
+            class="max-w-4xl w-full glass-morphism p-12 rounded-[3rem] relative overflow-hidden border-accent-dynamic/30">
             <button onclick="closeBriefing()"
                 class="absolute top-8 right-8 text-white/40 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
@@ -126,8 +127,8 @@
                     <div class="h-[1px] flex-1 bg-white/10"></div>
                 </div>
 
-                <h2 class="text-5xl font-black tracking-tighter italic">MISSION: <span class="text-accent-purple">EMPIRE
-                        EXPANSION</span></h2>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tighter italic uppercase">Mission: <span
+                        class="text-accent-dynamic">Empire Expansion</span></h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-6">
@@ -138,19 +139,19 @@
                         </p>
                         <div class="space-y-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-1.5 h-1.5 bg-accent-cyan rounded-full shadow-[0_0_10px_#06b6d4]"></div>
+                                <div class="w-1.5 h-1.5 bg-accent-dynamic rounded-full shadow-accent-dynamic"></div>
                                 <span class="text-sm font-bold tracking-widest text-white/50">NEURAL SCRIPTING</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-1.5 h-1.5 bg-accent-cyan rounded-full shadow-[0_0_10px_#06b6d4]"></div>
+                                <div class="w-1.5 h-1.5 bg-accent-dynamic rounded-full shadow-accent-dynamic"></div>
                                 <span class="text-sm font-bold tracking-widest text-white/50">VOICE CLONING</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-1.5 h-1.5 bg-accent-cyan rounded-full shadow-[0_0_10px_#06b6d4]"></div>
+                                <div class="w-1.5 h-1.5 bg-accent-dynamic rounded-full shadow-accent-dynamic"></div>
                                 <span class="text-sm font-bold tracking-widest text-white/50">3D ASSET FORGE</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-1.5 h-1.5 bg-accent-cyan rounded-full shadow-[0_0_10px_#06b6d4]"></div>
+                                <div class="w-1.5 h-1.5 bg-accent-dynamic rounded-full shadow-accent-dynamic"></div>
                                 <span class="text-sm font-bold tracking-widest text-white/50">ALGO SYNC</span>
                             </div>
                         </div>
@@ -199,7 +200,12 @@
         class="flex h-screen w-full relative z-10 antialiased opacity-0 pointer-events-none scale-105 transition-all duration-1000">
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="w-72 h-full flex flex-col p-6 glass-morphism border-r border-white/10 relative overflow-hidden">
+            class="fixed inset-y-0 left-0 w-72 h-full flex flex-col p-6 glass-morphism border-r border-white/10 z-50 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 overflow-hidden">
+            <!-- Sidebar Backdrop for Mobile -->
+            <div id="sidebar-overlay" onclick="toggleSidebar()"
+                class="lg:hidden fixed inset-0 bg-dark/60 backdrop-blur-sm -z-10 opacity-0 pointer-events-none transition-opacity">
+            </div>
+
             <!-- Noise Overlay -->
             <div class="absolute inset-0 bg-noise opacity-[0.03] pointer-events-none"></div>
 
@@ -259,19 +265,29 @@
         <main class="flex-1 flex flex-col overflow-hidden relative">
             <!-- Top Bar -->
             <header
-                class="h-20 flex items-center justify-between px-10 border-b border-white/5 glass-morphism sticky top-0 z-20">
-                <div class="flex items-center gap-4">
-                    <span id="current-date" class="text-white/50 text-sm font-mono tracking-widest uppercase">FEBRUARY
+                class="h-16 md:h-20 flex items-center justify-between px-4 md:px-10 border-b border-white/5 glass-morphism sticky top-0 z-20">
+                <div class="flex items-center gap-2 md:gap-4">
+                    <button onclick="toggleSidebar()"
+                        class="lg:hidden p-2 text-white/60 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <span id="current-date"
+                        class="text-white/50 text-[10px] md:text-sm font-mono tracking-widest uppercase">FEBRUARY
                         07, 2026</span>
-                    <div class="h-4 w-[1px] bg-white/10"></div>
-                    <div class="flex items-center gap-2 text-xs font-bold text-white/30">
+                    <div class="hidden sm:block h-4 w-[1px] bg-white/10"></div>
+                    <div class="hidden sm:flex items-center gap-2 text-[10px] md:text-xs font-bold text-white/30">
                         <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                        LIVE SYNC: 24 ms
+                        LIVE SYNC
                     </div>
                 </div>
 
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                <div class="flex items-center gap-3 md:gap-6">
+                    <div
+                        class="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-accent-dynamic" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -280,7 +296,7 @@
                         <input type="text" placeholder="Omni Search..."
                             class="bg-transparent border-none text-xs focus:outline-none w-32 placeholder:text-white/20">
                     </div>
-                    <div class="relative group cursor-pointer">
+                    <div class="relative group cursor-pointer scale-90 md:scale-100">
                         <div
                             class="absolute -inset-1 bg-gradient-to-r from-accent-purple to-accent-cyan rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500">
                         </div>
@@ -294,7 +310,8 @@
             </header>
 
             <!-- Scrollable Page Container -->
-            <div id="content-area" class="flex-1 overflow-y-auto overflow-x-hidden p-10 custom-scrollbar relative">
+            <div id="content-area"
+                class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-10 custom-scrollbar relative">
                 <!-- Content will be injected here via app.js -->
             </div>
         </main>
